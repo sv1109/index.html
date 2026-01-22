@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Valentine</title>
+<title>Valentine ❤️</title>
 
 <style>
   body {
     margin: 0;
     height: 100vh;
-    background: radial-gradient(circle at top, #8b0000, #2b0000);
+    background: #2b0000; /* deep romantic red */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,7 +21,7 @@
     font-size: 3rem;
     position: absolute;
     top: 15%;
-    text-shadow: 0 0 20px rgba(0,0,0,0.8);
+    text-shadow: 0 0 20px rgba(0,0,0,0.9);
   }
 
   button {
@@ -34,7 +34,7 @@
   }
 
   #yes {
-    background: #ff2e63;
+    background: #c1121f;
     color: white;
     left: 38%;
     top: 55%;
@@ -46,16 +46,93 @@
     left: 55%;
     top: 55%;
   }
+
+  .heart {
+    position: absolute;
+    color: #ff4d6d;
+    font-size: 24px;
+    animation: floatUp 4s linear forwards;
+    pointer-events: none;
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-600px) scale(1.5);
+      opacity: 0;
+    }
+  }
 </style>
 </head>
 
 <body>
 
 <h1>Will you be my Valentine? ❤️</h1>
-
 <button id="yes">YES</button>
 <button id="no">NO</button>
 
-<script src="script.js"></script>
+<script>
+  const noBtn = document.getElementById("no");
+  const yesBtn = document.getElementById("yes");
+
+  function moveNo() {
+    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  }
+
+  ["mouseover", "mousedown", "touchstart", "click"].forEach(evt => {
+    noBtn.addEventListener(evt, moveNo);
+  });
+
+  function airhorn() {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(110, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(55, ctx.currentTime + 0.6);
+
+    gain.gain.setValueAtTime(1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.7);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.7);
+  }
+
+  function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.bottom = "-30px";
+    heart.style.fontSize = (20 + Math.random() * 30) + "px";
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 4000);
+  }
+
+  yesBtn.addEventListener("click", () => {
+    airhorn();
+
+    document.body.innerHTML = `
+      <h1 style="top:40%">HAHAHAHA i knew you would say yes ❤️</h1>
+    `;
+
+    setInterval(createHeart, 200);
+  });
+</script>
+
 </body>
 </html>
+  
+
+
